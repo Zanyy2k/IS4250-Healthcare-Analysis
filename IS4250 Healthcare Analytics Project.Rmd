@@ -1,0 +1,342 @@
+---
+title: "IS4250 HealthCare Analytics Project"
+author: "Yu ZongDong"
+date: "4/8/2018"
+output: word_document
+fontsize: 11pt
+geometry: margin=1in
+header-includes:
+- \onehalfspacing
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(MASS)
+library(cluster)
+library(frbs)
+library(C50)
+
+ liver <- read.csv("~/Desktop/NUS/NUS Semster 7 - 2018/ IS4250 HealthCare IT & Analytics/Project/Liver.csv")
+ 
+```
+ 
+## 1. Introduction
+
+The paper “A hybrid model combining case-based reasoning and fuzzy decision tree for medical data classification” highlights the importance of data classification and the need for comprehensible decision rules in the field of healthcare. It focuses on developing a hybrid model - Case-Based Fuzzy Decision Tree (CBFDT) model - which would produce accurate and comprehensible decision rules. These would potentially guide medical doctors in extracting effective conclusions from medical diagnoses. The Liver Disorders dataset and Breast Cancer Repository (Diagnosis) are two datasets from UCI Machine Repository used in the paper to test the effectiveness of the CBFDT model against that of other past approaches. The results revealed that CBFDT produced the highest average accuracy rate. The paper concludes that with this hybrid classification model, doctors would be able to obtain a higher accuracy in their diagnosis of these two medical conditions. This model could also be applied towards classification of other medical disease database to enable diagnosis of other conditions.
+
+## 2. Contributions of Literature
+
+The paper identified several problems with existing methodologies. Firstly, with respect to liver disorders, the classification accuracy of current methods are too low to be adopted in practical applications. Secondly, existing models with high accuracy such as Neural Network models lack transparency in its decision process, resulting in the lack of interpretable decision rules. With that in mind, the paper set out  to develop a hybrid heuristic model to curb these issues.
+
+### 2.1 Robust Performance Under Different Medical Data
+
+The hybrid classification model developed in the paper outperforms that of all existing literatures, with an average accuracy rate of 99.5% in breast cancer and 85% in liver disorder. The high level of accuracy achieved renders the model significant enough to be adopted in practical applications. Furthermore, the paper used datasets from two different medical domains in its study, ensuring that the developed model would be robust under different medical data. This implies that the model could have far wider-ranging benefits in terms of being applicable to multiple medical conditions, rather than just liver disorders and breast cancer. This is a significant contribution to the field of health, and it may enable new insights in other medical specialisations which could result in better diagnoses and potentially life-saving decisions.
+
+### 2.2 Generating Comprehensible Decision Rules
+
+As mentioned earlier, existing classification models such as Neural Network models does not produce interpretable decision rules as their decision process functions like a black box. By combining soft computing techniques such as decision tree tool ID3, fuzzy theory and genetic algorithms, the hybrid classification model developed in the paper not only produces accurate results, but also identifies the importance of each variable and generates comprehensible decision rules. These are significant improvements from past methods. These are also especially relevant and important in the field of healthcare where medical classification problems are becoming increasingly complex and it is imperative for doctors to understand the types of symptoms leading to the diseases. This would enable them to communicate more effectively and accurately to their patients and other healthcare professionals in the exchange of knowledge.
+
+### 2.3 Stimulating New Improvements And Discoveries
+
+The hybrid classification model presented in the paper is a novel methodology, being the first to combine multiple computing techniques such as clustering, fuzzy rules, decision trees and genetic algorithms. This may spark off increased interest and participation in this area, and encourage subsequent researches to build on this idea to further enhance the model or derive new innovative methods. The subsequent application of this model to untapped medical areas could also stimulate new discoveries, potentially leading to the development of new preventions or cures. At the minimum, by enabling more effective diagnoses across different medical conditions, the developed model will increase the overall standards of healthcare. These contributions will drive advancements in healthcare and improve overall effectiveness.
+
+
+# 3. Challenges and Limitations
+
+### 3.1 Volatility of Decision Rules from Data Distribution
+
+One limitation highlighted in the paper when developing the hybrid classification model would be the volatility of decision rules caused by data distribution. Data distribution is an important factor to be considered as it will affect the number of fuzzy terms clustered in the dataset. Ideally, the model wants to be able to identify the appropriate number of fuzzy terms for each variable such that the number of data within each fuzzy term is not too large, as a reasonably small number would enable more precise decision rules to be generated. However, the number of fuzzy terms identified is highly sensitive to changes in data distribution of the variables. This in turn affects the number of rules generated, and may create poor decision rules that lead to wrong medical decisions. It is thus a challenge to improve the process of identification of fuzzy terms to be more consistent so that the decision rules are less volatile to changes in data distribution.  
+
+### 3.2 Small Data Size After Clustering
+
+As data fuzzification and the decision trees are built on each clusters that are obtained after the clustering process, the data size might be too small in model training. This leads to one major problem of overfitting which would produce misleading results. This is especially noteworthy in the field of healthcare as misleading decision rules might lead to a misdiagnosis. 
+
+### 3.3 Large number of fuzzy terms undermines effectiveness
+
+One rationale behind the use of fuzzification in the hybrid model was to allow comprehensible decision rules. However, in the paper, the number of fuzzy terms used extend to as high as nine fuzzy terms for some variables. This seemed to undermine the intended purpose of creating comprehensible rules, as it is arguably hard to come up with nine linguistic terms that are ordinal yet meaningful and still understandable. This is a limitation that the model must address, and it will be a challenge to limit the number of fuzzy terms while retaining its high accuracy.
+
+### 3.4 Dependence On Initial Clustering Accuracy
+
+One aspect not mentioned much in the paper is the dependence on initial clustering accuracy. The model achieves its high accuracy by building the decision tree on separate clusters which have similar patterns in terms of medical profiles. This implies that an inaccurate clustering model would render the whole hybrid classification model ineffective. However, in order to train a robust clustering model, comprehensive training dataset would be required, and this may not always be available to the researchers.
+
+## 4. Experimental Plot
+
+In this section, we attempt to replicate the experimental plots on the UCI liver disorder dataset used in the paper, using a similar approach as mentioned in the paper. For steps that cannot be replicated identically due to insufficient information provided, we replaced them with the best possible alternative available to us.
+
+1. Attributes Selection using Stepwise Regression
+
+The paper used SPSS statistics software for applying stepwise regression on the dataset. In replacement, as we are required to run the plot in R, we used stepAIC from the ‘MASS’ package to conduct the stepwise regression analysis. The stepwise regression derived that all variables are significant in improving the fit of the model, and the resulting model included all six variables from the original dataset.
+
+2. Clustering
+
+With the six selected variables, clustering analysis using a similarity measure was conducted. Similar to the paper, we used the within-cluster sum of squares as a similarity measure to derive that the optimal number of clusters is 10 as shown in figure 1 below. We then conducted k-means clustering. This clustering procedure is vital for the experimental plot as it groups patients in terms of their similarity in medical data profiles, and the clusters provide the basis on which subsequent steps are conducted. Figure 2 below shows the cluster distribution obtained. Next, a bar graph was plotted to visualise the distribution and size of each cluster, as well as its composition with respect to the selector variable, as illustrated by the two different colours in Figure 3. For the subsequent steps, we selected three clusters to conduct the analyses and replicate the plots. We selected three clusters with the biggest size, namely Clusters 1, 8, and 10 as seen from Figure 3.
+
+  *Figure 1: Within Sum of Squares for liver disorder dataset*
+
+
+  *Figure 2: Cluster distribution for liver disorder dataset*
+
+  *Figure 3: Bar plot of cluster distribution for liver disorder dataset*
+
+3. Data Fuzzification
+
+After obtaining the clusters, the paper applied the fuzzy resolution concept in fuzzy set theory to each cluster to transform the data variables from continuous to discrete. The purpose of fuzzifying the variables is to address the uncertainty of the meaning of the data. In reality, sustainable decision-making often involves complicated and poorly defined variables due to the incomplete understanding of the underlying issues. Furthermore, using numbers to make decisions may be fraught with subjectivity. Therefore, it is more appropriate to use fuzzy logic that allows the modelling of a system without detailed mathematical descriptions by using both qualitative and quantitative data, which is easier to understand the rationale behind the decisions made. The triangle membership function was adopted as the primary membership function in the fuzzification of data. However, the paper did not state the linguistic variables or number of fuzzy terms used for each variable, nor did it describe the basis on which the fuzzy terms were chosen. We conjectured that expert knowledge was applied in determining the number of fuzzy terms. Since we do not have access to expert knowledge, we categorised all the variables into three fuzzy terms, with linguistic variables that are easy to understand - “Low”, “Medium”, and “High”. The membership function graph for each variable are plotted and shown in Figure 4. To illustrate the interpretation of the graph, we use the following example. When “alkphos” = 50, we are uncertain if this value is considered high or low but from the figure below, we obtain two membership function degree - 0.18 and 0.8. We will then choose the higher membership function which corresponds to the second triangle in the plot, and conclude that “alkphos” = 50 is considered “Medium” level. Therefore, fuzzification provides a more intuitive interpretation and is useful in helping us understand the meaning of each variable. 
+
+*Figure 4: Membership Function Graphs of all variables in Cluster 1*
+
+4. C5.0 Decision Tree
+
+Next, the paper split each cluster into training and test sets using the split ratio of 75%. Similarly, we split our three selected clusters into training and test sets using the split ratio of 75%. The paper then built ID3 decision tree on the training set of each cluster to derive insightful rules and symptoms. However, there is no ID3 package in R. In replacement, we used the C5.0 decision tree from the ‘C50’ package. C5.0 decision tree is the successor of C4.5 and ID3, and it selects node variable using the same criterion as ID3 does which is to maximize information gain. This makes C5.0 decision tree an ideal replacement, as compared to other available alternatives such as the CART decision tree which uses Gini index as criterion instead. Using C5.0 algorithm on the training sets of the three selected clusters, we were able to create the following decision tree models shown in Figures 5, 6 and 7. From these decision tree models built on fuzzified variables, we were able to derive the fuzzy rules by following the decision tree from top to bottom. Table 1 shows an example of fuzzy rules generated for cluster 10 from its decision tree. Such fuzzy rules provides reasoning and explanation of symptoms which allow doctors to better understand the prediction model and apply it to new cases. Each of the above decision tree models was then used to predict its corresponding test set, and the prediction accuracy of each cluster’s model was tabulated in Table 2.
+
+*Figure 5: Classification Tree for Cluster 1*
+
+*Figure 6: Classification Tree for Cluster 8* 
+
+*Figure 7: Classification Tree for Cluster 10* 
+
+Fuzzy Rules for Cluster 10’s Classification Tree |                                     
+---- | -------------------------------------------------------------------------------
+1    | If sgpt is High, then selector = 1 (no liver disease)
+2    | If sgpt is Low or Medium, and sgot is Low, then selector = 1 (no liver disease)
+3    | If sgpt is Low or Medium, and sgot is Medium, then selector = 2 (liver disease)
+
+*Table 1: Fuzzy rules generated for cluster 10*
+
+Cluster 1  | Cluster 8 | Cluster 10
+---------- | --------- | --------
+79.2%      | 69.2%     | 44.4%
+
+*Table 2: Accuracy of the classification tree model of each cluster*
+
+5. Evolving the Decision Tree
+
+In this final step, the paper seeked to evolve the decision tree by applying genetic algorithm to find the best number of fuzzy terms to use for every variable, with the objective of improving the accuracy of the decision tree. With our understanding of the genetic algorithm applied in the paper, we implemented our own methodology of evolving the decision tree. Our methodology involves trying out all possible combinations of the number of fuzzy terms ranging from three to five for each variable, and finding the corresponding decision tree accuracy for each combination. Our methodology works on the same fundamental concept as that of the genetic algorithm, which is to determine the combination of number of fuzzy terms that maximises the decision tree accuracy. We demonstrated this step on Cluster 1. Applying our methodology to Cluster 1, we were able to derive the accuracies for 729 different combinations of number of fuzzy terms. Of these, the top six accuracies were shown in Table 3 below.
+
+** Table 3 ** 
+*Table 3: Six combinations of the number of fuzzy terms with the highest accuracies for Cluster 1*
+
+From Table 3, we can see that the highest accuracy that could be obtained for Cluster 1’s decision tree was 87.5% when using either of the five different combinations listed. Through this, we were able to successfully evolve the decision tree for Cluster 1 from its previous accuracy of 79.2% (using three fuzzy terms for all variables) to an improved accuracy of 87.5%. We selected the first combination of having three fuzzy terms for the first five variables and four fuzzy terms for drinks variable and plot the new membership function graph for drinks variable as shown in Figure 8. The improved decision tree for Cluster 1 is shown in Figure 9.
+
+*Figure 8: Membership Function Graph of drinks variable with 4 fuzzy terms*
+
+*Figure 9: Improved Classification Tree for Cluster 1 obtained through Step 5*
+
+## 5. Conclusion
+
+The CBFDT model developed in this paper outperforms many other traditional classification methods. One of the reasons contributing to the high performance of the model is the incorporation of clustering to achieve a more homogenous dataset such that the fuzzy terms generated can more sensitively react to the specific disease. In addition, the optimal fuzzy terms can also be derived from the genetic algorithm. All in all, this paper has made remarkable contributions to the field of healthcare by embarking on the development of a hybrid classification model which not just enhances existing classification models but incorporated new techniques. The final model not only achieved both accuracy and robustness, it also provides doctors and healthcare professionals reliable explanations and symptoms (in terms of decision rules) that leads to the final diagnosis. 
+
+## Appendices 
+### Appendix A - Data
+
+We replicated the experimental plots using the liver disorder data obtained from UCI database, which is one of the datasets used in the paper. The dataset contains 7 variables including the target variable. Table 4 below illustrates the variables available. 
+
+*Table 4: Variables of the UCI liver disorder dataset and their corresponding description*
+
+## Appendix B - Source Code
+```{r eval=FALSE}
+
+liver_final <- subset(liver,select= -c(selector))
+
+#stepwise regression
+
+logreg <- glm(as.factor(selector) ~., data=liver, family="binomial")
+summary(logreg)
+step <- stepAIC(logreg, direction="both")
+step$anova # display results
+
+#within sum of squares
+
+liver_final <- liver[ , -which(names(liver) %in% c("selector"))]
+
+set.seed(109)
+wss <- (nrow(liver_final)-1)*sum(apply(liver_final,2,var))
+for (i in 2:15) wss[i] <- sum(kmeans(liver_final,
+                                     centers=i)$withinss)
+plot(1:15, wss, type="b", xlab="Number of Clusters",
+     ylab="Within groups sum of squares")
+
+#--------------clustering------------------
+
+livercluster <- kmeans(liver_final, 10, nstart = 20)
+
+clusplot(liver_final, livercluster$cluster, color=TRUE, shade=TRUE, 
+         labels=2, lines=0, main = "2-D Cluster Plot (Liver)")
+with(liver, pairs(liver_final, col=c(1:10)[livercluster$cluster]))
+
+#stacked bar plot
+counts <- table(liver$selector, livercluster$cluster)
+barplot(counts, main="Distribution by Cluster",
+        xlab="Cluster", col=c("blue","darkblue"),
+        legend = rownames(counts))
+
+cluster1 <- liver[which(livercluster$cluster==1), ]
+
+cluster8 <- liver[which(livercluster$cluster==8), ]
+
+cluster10 <- liver[which(livercluster$cluster==10), ]
+
+#------ membership function graph
+
+mfgraph <- function(variable, numterms, name) {
+  min <- min(variable)
+  max <- max(variable)
+  interval <- (max-min)/(numterms-1)
+  
+  varinp.mf <- c(1:numterms)
+  for(i in 1:numterms){
+    varinp.mf[i] <- 1
+  }
+  varinp.mf <- c(varinp.mf, min)
+  for(i in 1:(numterms-1)){
+    nextparam <- min + interval*(i-1)
+    varinp.mf <- c(varinp.mf, nextparam)
+  }
+  
+  for(i in 1:numterms){
+    nextparam <- min + interval*(i-1)
+    varinp.mf <- c(varinp.mf, nextparam)
+  }
+  
+  for(i in 2:numterms){
+    nextparam <- min + interval*(i-1)
+    varinp.mf <- c(varinp.mf, nextparam)
+  }
+  varinp.mf <- c(varinp.mf, max)
+  for(i in 1:numterms){
+    varinp.mf <- c(varinp.mf, NA)
+  }
+  
+  varinp.mf <- matrix(varinp.mf, nrow=5, byrow=TRUE)
+  num.labels <- data.frame(numterms)
+  range.data <- matrix(c(min, max), nrow=2)
+  names.variables <- c(name)
+  
+  plotMF(object=list(var.mf=varinp.mf, range.data.ori=range.data, num.labels=num.labels, names.variables=names.variables))
+}
+
+#----- fuzzifier function
+
+fuzzify <- function(variable, numterms, name){
+  min <- min(variable)
+  max <- max(variable)
+  interval <- (max-min)/(numterms-1)
+  
+  varinp.mf <- c(1:numterms)
+  for(i in 1:numterms){
+    varinp.mf[i] <- 1
+  }
+  varinp.mf <- c(varinp.mf, min)
+  for(i in 1:(numterms-1)){
+    nextparam <- min + interval*(i-1)
+    varinp.mf <- c(varinp.mf, nextparam)
+  }
+  
+  for(i in 1:numterms){
+    nextparam <- min + interval*(i-1)
+    varinp.mf <- c(varinp.mf, nextparam)
+  }
+  
+  for(i in 2:numterms){
+    nextparam <- min + interval*(i-1)
+    varinp.mf <- c(varinp.mf, nextparam)
+  }
+  varinp.mf <- c(varinp.mf, max)
+  for(i in 1:numterms){
+    varinp.mf <- c(varinp.mf, NA)
+  }
+  
+  varinp.mf <- matrix(varinp.mf, nrow=5, byrow=TRUE)
+  num.labels <- data.frame(numterms)
+  degree <- fuzzifier(data=data.frame(variable), num.varinput=1, num.labels.input=num.labels, varinp.mf=varinp.mf)
+  
+  temp <- c()
+  for(i in 1:numterms){
+    temp <- c(temp, paste(c(name, i), collapse="."))
+    #temp <- c("Low", "Medium", "High")
+  }
+  
+  colnames(degree) <- temp
+  for(i in 1:nrow(degree)){
+    categorynum <- which(degree[i,] == max(degree[i,]))
+    variable[i] <-  colnames(degree)[categorynum]
+  }
+  
+  variable
+}
+
+
+calculateacc <- function(selectedclus, clusternum, seed, a, b, c, d, e, f, plotgraphs){
+  if(plotgraphs==TRUE){
+    mfgraph(selectedclus$alkphos, a, "alkphos")
+    mfgraph(selectedclus$sgpt, b, "sgpt")
+    mfgraph(selectedclus$sgot, c, "sgot")
+    mfgraph(selectedclus$gammagt, d, "gammagt")
+    mfgraph(selectedclus$mcv, e, "mcv")
+    mfgraph(selectedclus$drinks, f, "drinks")
+  }
+  
+  selectedclus$alkphos <- fuzzify(selectedclus$alkphos, a, "alkphos")
+  selectedclus$sgpt <- fuzzify(selectedclus$sgpt, b, "sgpt")
+  selectedclus$sgot <- fuzzify(selectedclus$sgot, c, "sgot")
+  selectedclus$gammagt <- fuzzify(selectedclus$gammagt, d, "gammagt")
+  selectedclus$mcv <- fuzzify(selectedclus$mcv, e, "mcv")
+  selectedclus$drinks <- fuzzify(selectedclus$drinks, f, "drinks")
+  
+  selectedclus$alkphos <- as.factor(selectedclus$alkphos)
+  selectedclus$sgpt <- as.factor(selectedclus$sgpt)
+  selectedclus$sgot <- as.factor(selectedclus$sgot)
+  selectedclus$gammagt <- as.factor(selectedclus$gammagt)
+  selectedclus$mcv <- as.factor(selectedclus$mcv)
+  selectedclus$drinks <- as.factor(selectedclus$drinks)
+  selectedclus$selector <- as.factor(selectedclus$selector)
+  
+  ##using C5.0 from C50
+  set.seed(seed)
+  train_ind <- sample(seq_len(nrow(selectedclus)), size=floor(0.75*nrow(selectedclus)))
+  train <- selectedclus[train_ind, ]
+  test <- selectedclus[-train_ind, ]
+  
+  selectedclus.tree <- C5.0(selector~., data=train)
+  if(plotgraphs==TRUE){
+    plot(selectedclus.tree, type="simple", main=paste(c("Classification Tree for Liver (Cluster ", clusternum, ")"), collapse=""))
+  }
+  pred <- predict(selectedclus.tree, test, type="class")
+  confMat <- table((test$selector), pred)
+  accuracy <- sum(diag(confMat))/sum(confMat)
+  print(accuracy)
+}
+
+calculateacc(cluster1, '1', 109, 3, 3, 3, 3, 3, 3, TRUE)
+calculateacc(cluster8, '8', 109, 3, 3, 3, 3, 3, 3, TRUE)
+calculateacc(cluster10, '10', 109, 3, 3, 3, 3, 3, 3, TRUE)
+
+#----- Evolving the Decision Tree ----------
+
+# do for largest cluster (cluster 1) to get best number of fuzzy terms 
+accuracytable <- data.frame(matrix(ncol = 7, nrow = 0))
+for(i in 3:5){
+  for (j in 3:5) {
+    for (k in 3:5) {
+      for (l in 3:5) {
+        for (m in 3:5) {
+          for (n in 3:5) {
+            acc <- calculateacc(cluster1, '1', 109, i, j, k, l, m, n, plotgraphs=FALSE)
+            temp <- c(i, j, k, l, m, n, acc)
+            accuracytable <- rbind(accuracytable, temp)
+          }
+        }
+      }
+    }
+  }
+}
+x <- c("mcv", "alkphos", "sgpt", "sgot", "gammagt", "drinks", "accuracy")
+colnames(accuracytable) <- x
+
+table(accuracytable$accuracy)
+c1_acc <- head(accuracytable[order(-accuracytable$accuracy),])
+c1_acc
+
+
+# using best fuzzy combination
+calculateacc(cluster1, '1', 109, 3, 3, 3, 3, 3, 4, TRUE)
+```
+
